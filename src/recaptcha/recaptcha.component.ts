@@ -2,7 +2,7 @@ import {
   ControlValueAccessor,
   AbstractControl,
   NgControl,
-} from '@angular/forms';
+} from "@angular/forms";
 import {
   Inject,
   Output,
@@ -18,10 +18,10 @@ import {
   Injectable,
   OnDestroy,
   ChangeDetectionStrategy,
-} from '@angular/core';
+} from "@angular/core";
 
-import { RECAPTCHA_CONFIG } from './recaptcha.tokens';
-import { RecaptchaModuleConfig } from './recaptcha.module';
+import { RECAPTCHA_CONFIG } from "./recaptcha.tokens";
+import { RecaptchaModuleConfig } from "./recaptcha.module";
 
 export interface InjectAndLoadScriptConfig {
   scriptSrc: string;
@@ -32,18 +32,18 @@ export interface InjectAndLoadScriptConfig {
 @Injectable()
 export class ScriptLoaderService {
   injectAndLoadScript(config: InjectAndLoadScriptConfig) {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.src = config.scriptSrc;
     script.async = true;
     script.defer = true;
     script.onload = () => config.onLoadCallback();
-    script.onerror = err => config.onErrorCallback(err);
+    script.onerror = (err) => config.onErrorCallback(err);
     document.body.appendChild(script);
   }
 }
 
 @Component({
-  selector: 'recaptcha',
+  selector: "recaptcha",
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="angular-google-recaptcha-container" #container></div>
@@ -55,9 +55,10 @@ export class RecaptchaComponent
   @Output() scriptLoad = new EventEmitter<void>();
   @Output() scriptError = new EventEmitter<ErrorEvent>();
 
-  @ViewChild('container') container: ElementRef;
+  @ViewChild("container") container: ElementRef;
 
-  private readonly GLOBAL_ON_LOAD_CALLBACK_NAME = '___recaptchaOnLoadCallback___';
+  private readonly GLOBAL_ON_LOAD_CALLBACK_NAME =
+    "___recaptchaOnLoadCallback___";
   private onChange: (val: true | false) => void;
   private onTouched: () => void;
   private activeRecaptchaId: string;
@@ -73,7 +74,7 @@ export class RecaptchaComponent
     private controlDir: NgControl,
     private scriptLoaderService: ScriptLoaderService,
     private zone: NgZone,
-    private cd: ChangeDetectorRef,
+    private cd: ChangeDetectorRef
   ) {
     this.controlDir.valueAccessor = this;
   }
@@ -90,13 +91,13 @@ export class RecaptchaComponent
      * whatever was previously set
      */
     control.setValidators((ctrl: AbstractControl) => {
-      if (typeof this.activeRecaptchaId === 'undefined' || !this.recaptchaAPI) {
+      if (typeof this.activeRecaptchaId === "undefined" || !this.recaptchaAPI) {
         return {
           invalidRecaptcha: true,
         };
       }
       const recaptchaResponse = this.recaptchaAPI.getResponse(
-        this.activeRecaptchaId,
+        this.activeRecaptchaId
       );
       if (!recaptchaResponse) {
         return {
@@ -159,12 +160,17 @@ export class RecaptchaComponent
    * Outputs to the component
    */
   private injectGoogleRecaptchaScript(): void {
+    // this.scriptLoaderService.injectAndLoadScript({
+    //   scriptSrc: `https://www.google.com/recaptcha/api.js?render=explicit&onload=${
+    //     this.GLOBAL_ON_LOAD_CALLBACK_NAME
+    //   }`,
+    //   onLoadCallback: () => this.scriptLoad.emit(),
+    //   onErrorCallback: err => this.scriptError.emit(err),
+    // });
     this.scriptLoaderService.injectAndLoadScript({
-      scriptSrc: `https://www.google.com/recaptcha/api.js?render=explicit&onload=${
-        this.GLOBAL_ON_LOAD_CALLBACK_NAME
-      }`,
+      scriptSrc: `https://www.recaptcha.net/recaptcha/api.js?render=explicit&onload=${this.GLOBAL_ON_LOAD_CALLBACK_NAME}`,
       onLoadCallback: () => this.scriptLoad.emit(),
-      onErrorCallback: err => this.scriptError.emit(err),
+      onErrorCallback: (err) => this.scriptError.emit(err),
     });
   }
 
@@ -181,8 +187,8 @@ export class RecaptchaComponent
       {
         sitekey: this.recaptchaConfig.siteKey,
         callback: this.onRecaptchaValidCallback.bind(this),
-        'expired-callback': this.onRecaptchaExpiredCallback.bind(this),
-      },
+        "expired-callback": this.onRecaptchaExpiredCallback.bind(this),
+      }
     );
   }
 
