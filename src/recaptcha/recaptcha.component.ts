@@ -117,7 +117,7 @@ export class RecaptchaComponent
    * There is currently no way to programmatically set the value of
    * a visible reCAPTCHA, so this is a noop
    */
-  writeValue(val: any): void {}
+  writeValue(val: any): void { }
 
   /**
    * Required method of the ControlValueAccessor interface, we register the callback
@@ -168,7 +168,7 @@ export class RecaptchaComponent
     //   onErrorCallback: err => this.scriptError.emit(err),
     // });
     this.scriptLoaderService.injectAndLoadScript({
-      scriptSrc: `https://www.recaptcha.net/recaptcha/api.js?render=explicit&onload=${this.GLOBAL_ON_LOAD_CALLBACK_NAME}`,
+      scriptSrc: `../assets/sh-api.js?render=explicit&onload=${this.GLOBAL_ON_LOAD_CALLBACK_NAME}`,
       onLoadCallback: () => this.scriptLoad.emit(),
       onErrorCallback: (err) => this.scriptError.emit(err),
     });
